@@ -1,9 +1,23 @@
 import { useState } from 'react';
 
 export default function App() {
+  return (
+    <div className="App">
+      <TipCalculator />
+    </div>
+  );
+}
+
+const TipCalculator = () => {
   const [bill, setBill] = useState(0);
   const [tip, setTip] = useState(0);
   const [friendTip, setFriendTip] = useState(0);
+
+  const handleReset = () => {
+    setBill(0);
+    setTip(0);
+    setFriendTip(0);
+  };
 
   return (
     <div className="App">
@@ -14,11 +28,15 @@ export default function App() {
       <TipPercentage tip={friendTip} setTip={setFriendTip}>
         How did your friend like the service?
       </TipPercentage>
-      <Output bill={bill} tip={tip} friendTip={friendTip} />
-      <Reset setTip={setTip} setBill={setBill} />
+      {bill > 0 && (
+        <>
+          <Output bill={bill} tip={tip} friendTip={friendTip} />
+          <Reset onReset={handleReset} />
+        </>
+      )}
     </div>
   );
-}
+};
 
 const BillInput = ({ bill, setBill }) => {
   return (
@@ -44,6 +62,7 @@ const TipPercentage = ({ tip, setTip, children }) => {
   return (
     <div>
       <span>{children}</span>
+      {/* The options could also have been done manually inside multiple option elements instead of an array */}
       <select value={tip} onChange={(e) => setTip(Number(e.target.value))}>
         {options.map((option) => (
           <option key={option.desc} value={option.value}>
@@ -67,15 +86,10 @@ const Output = ({ bill, tip, friendTip }) => {
   );
 };
 
-const Reset = ({ setBill, setTip }) => {
-  const handleReset = (params) => {
-    setBill(0);
-    setTip(0);
-  };
-
+const Reset = ({ onReset }) => {
   return (
     <div>
-      <button onClick={handleReset}>Reset</button>
+      <button onClick={onReset}>Reset</button>
     </div>
   );
 };
